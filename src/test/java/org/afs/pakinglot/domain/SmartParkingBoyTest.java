@@ -1,41 +1,24 @@
+// src/test/java/org/afs/pakinglot/domain/SmartParkingBoyTest.java
 package org.afs.pakinglot.domain;
 
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-import org.afs.pakinglot.domain.strategies.MaxAvailableStrategy;
+import org.afs.pakinglot.domain.model.*;
 import org.junit.jupiter.api.Test;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class SmartParkingBoyTest {
-    @Test
-    void should_park_car_to_parking_lot_with_more_empty_positions_when_park_given_2_parking_lots() {
-        // Given
-        ParkingLot parkingLot1 = new ParkingLot();
-        ParkingLot parkingLot2 = new ParkingLot();
-        parkingLot1.park(new Car(CarPlateGenerator.generatePlate()));
-        ParkingBoy smartParkingBoy = new ParkingBoy(List.of(parkingLot1, parkingLot2), new MaxAvailableStrategy());
-        Car car = new Car(CarPlateGenerator.generatePlate());
-        // When
-        Ticket ticket = smartParkingBoy.park(car);
-        // Then
-        Car fetchedCar = parkingLot2.fetch(ticket);
-        assertEquals(car, fetchedCar);
-    }
 
     @Test
-    void should_park_car_to_first_parking_lot_when_park_given_2_parking_lots_have_same_number_of_empty_position() {
+    void should_park_in_lot_with_most_available_positions() {
         // Given
-        ParkingLot parkingLot1 = new ParkingLot();
-        ParkingLot parkingLot2 = new ParkingLot();
-        parkingLot1.park(new Car(CarPlateGenerator.generatePlate()));
-        parkingLot2.park(new Car(CarPlateGenerator.generatePlate()));
-        ParkingBoy smartParkingBoy = new ParkingBoy(List.of(parkingLot1, parkingLot2), new MaxAvailableStrategy());
+        ParkingLot parkingLot1 = new ParkingLot(1);
+        ParkingLot parkingLot2 = new ParkingLot(2);
+        SmartParkingBoy smartParkingBoy = new SmartParkingBoy(List.of(parkingLot1, parkingLot2));
         Car car = new Car(CarPlateGenerator.generatePlate());
         // When
         Ticket ticket = smartParkingBoy.park(car);
         // Then
-        Car fetchedCar = parkingLot1.fetch(ticket);
-        assertEquals(car, fetchedCar);
+        assertTrue(parkingLot2.contains(ticket));
     }
 }

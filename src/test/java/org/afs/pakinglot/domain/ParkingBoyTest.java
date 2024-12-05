@@ -1,9 +1,12 @@
+// src/test/java/org/afs/pakinglot/domain/ParkingBoyTest.java
 package org.afs.pakinglot.domain;
 
 import org.afs.pakinglot.domain.exception.NoAvailablePositionException;
 import org.afs.pakinglot.domain.exception.UnrecognizedTicketException;
+import org.afs.pakinglot.domain.model.*;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -89,5 +92,44 @@ class ParkingBoyTest {
         // When
         // Then
         assertThrows(NoAvailablePositionException.class, () -> parkingBoy.park(car));
+    }
+
+    @Test
+    void should_return_parking_duration_when_get_parking_duration_given_a_ticket() {
+        // Given
+        ParkingLot parkingLot = new ParkingLot();
+        Car car = new Car(CarPlateGenerator.generatePlate());
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLot);
+        Ticket ticket = parkingBoy.park(car);
+        // When
+        Duration duration = parkingLot.getParkingDuration(ticket);
+        // Then
+        assertNotNull(duration);
+    }
+
+    @Test
+    void should_return_error_when_park_given_invalid_license_plate() {
+        // Given
+        ParkingLot parkingLot = new ParkingLot();
+        Car car = new Car("INVALID");
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLot);
+        // When
+        // Then
+        IllegalArgumentException exception =
+                assertThrows(IllegalArgumentException.class, () -> parkingBoy.park(car));
+        assertEquals("Invalid license plate format.", exception.getMessage());
+    }
+
+    @Test
+    void should_return_error_when_park_given_empty_license_plate() {
+        // Given
+        ParkingLot parkingLot = new ParkingLot();
+        Car car = new Car("");
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLot);
+        // When
+        // Then
+        IllegalArgumentException exception =
+                assertThrows(IllegalArgumentException.class, () -> parkingBoy.park(car));
+        assertEquals("License plate cannot be empty.", exception.getMessage());
     }
 }
