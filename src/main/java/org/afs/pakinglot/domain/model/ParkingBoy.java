@@ -1,8 +1,10 @@
+// src/main/java/org/afs/pakinglot/domain/model/ParkingBoy.java
 package org.afs.pakinglot.domain.model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.afs.pakinglot.domain.exception.UnrecognizedTicketException;
 import org.afs.pakinglot.domain.strategies.ParkingStrategy;
@@ -28,6 +30,9 @@ public class ParkingBoy {
 
     public Ticket park(Car car) {
         validateLicensePlate(car.plateNumber());
+        if (isCarAlreadyParked(car)) {
+            throw new IllegalArgumentException("This car already has a parking space");
+        }
         return parkingStrategy.findParkingLot(parkingLots).park(car);
     }
 
@@ -43,6 +48,20 @@ public class ParkingBoy {
         return parkingLots.stream().anyMatch(parkingLot -> parkingLot.contains(ticket));
     }
 
+    public double calculateParkingFee(Ticket ticket) {
+        ParkingLot parkingLotOfTheTicket = parkingLots.stream()
+                .filter(parkingLot -> parkingLot.contains(ticket))
+                .findFirst()
+                .orElseThrow(UnrecognizedTicketException::new);
+        return parkingLotOfTheTicket.calculateParkingFees(ticket);
+    }
+
+    public List<Ticket> getTickets() {
+        return parkingLots.stream()
+                .flatMap(parkingLot -> parkingLot.getTickets().stream())
+                .collect(Collectors.toList());
+    }
+
     private void validateLicensePlate(String plateNumber) {
         if (plateNumber == null || plateNumber.isEmpty()) {
             throw new IllegalArgumentException("License plate cannot be empty.");
@@ -50,5 +69,11 @@ public class ParkingBoy {
         if (!LICENSE_PLATE_PATTERN.matcher(plateNumber).matches()) {
             throw new IllegalArgumentException("Invalid license plate format.");
         }
+    }
+
+    private boolean isCarAlreadyParked(Car car) {
+        return parkingLots.stream()
+                .anyMatch(parkingLot -> parkingLot.getTickets().stream()
+                        .anyMatch(ticket -> ticket.plateNumber().equals(car.plateNumber())));
     }
 }

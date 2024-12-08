@@ -16,15 +16,19 @@ public class ParkingBoyService {
 
     private static final Pattern LICENSE_PLATE_PATTERN = Pattern.compile("^[A-Z]{2}-\\d{4}$");
 
-    public Ticket park(Car car, String strategy) {
-        return parkingBoyRepository.park(car, strategy);
+    public Ticket park(Car car, String strategy, String parkingBoyType) {
+        return parkingBoyRepository.park(car, strategy, parkingBoyType);
     }
 
-    public Car fetch(Ticket ticket) {
-        return parkingBoyRepository.fetch(ticket);
+    public Car fetch(Ticket ticket, String parkingBoyType) {
+        return parkingBoyRepository.fetch(ticket, parkingBoyType);
     }
 
     public boolean isValidPlateNumber(String plateNumber) {
         return LICENSE_PLATE_PATTERN.matcher(plateNumber).matches();
+    }
+
+    public Ticket findTicketByPlateNumber(String plateNumber, String parkingBoyType) {
+        return parkingBoyRepository.findTicketByPlateNumber(plateNumber, parkingBoyType);
     }
 }

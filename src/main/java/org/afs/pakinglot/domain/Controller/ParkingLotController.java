@@ -3,7 +3,7 @@ package org.afs.pakinglot.domain.Controller;
 
 import org.afs.pakinglot.domain.model.Car;
 import org.afs.pakinglot.domain.model.Ticket;
-import org.afs.pakinglot.service.ParkingLotService;
+import org.afs.pakinglot.domain.service.ParkingLotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

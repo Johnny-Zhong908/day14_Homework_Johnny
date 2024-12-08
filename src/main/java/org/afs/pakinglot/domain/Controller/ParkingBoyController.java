@@ -16,16 +16,22 @@ public class ParkingBoyController {
     private ParkingBoyService parkingBoyService;
 
     @PostMapping("/park")
-    public Ticket park(@RequestBody Car car, @RequestParam String strategy) {
+    public String park(@RequestBody Car car, @RequestParam String strategy, @RequestParam String parkingBoyType) {
         if (parkingBoyService.isValidPlateNumber(car.plateNumber())) {
-            return parkingBoyService.park(car, strategy);
+            try {
+                Ticket ticket = parkingBoyService.park(car, strategy, parkingBoyType);
+                return "Ticket: your plateNumber is: " + car.plateNumber();
+            } catch (IllegalArgumentException e) {
+                return e.getMessage();
+            }
         } else {
             throw new IllegalArgumentException("Invalid license plate format.");
         }
     }
 
     @GetMapping("/fetch")
-    public Car fetch(@RequestParam Ticket ticket) {
-        return parkingBoyService.fetch(ticket);
+    public Car fetch(@RequestParam String plateNumber, @RequestParam String parkingBoyType) {
+        Ticket ticket = parkingBoyService.findTicketByPlateNumber(plateNumber, parkingBoyType);
+        return parkingBoyService.fetch(ticket, parkingBoyType);
     }
 }

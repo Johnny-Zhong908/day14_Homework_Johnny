@@ -1,5 +1,5 @@
 // src/main/java/org/afs/pakinglot/service/ParkingLotService.java
-package org.afs.pakinglot.service;
+package org.afs.pakinglot.domain.service;
 
 import org.afs.pakinglot.domain.model.*;
 import org.afs.pakinglot.domain.Repository.ParkingLotRepository;

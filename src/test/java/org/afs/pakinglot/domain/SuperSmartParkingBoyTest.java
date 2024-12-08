@@ -16,14 +16,20 @@ class SuperSmartParkingBoyTest {
     @Test
     void should_park_in_lot_with_highest_available_position_rate() {
         // Given
-        ParkingLot parkingLot1 = new ParkingLot(1); // Capacity 1
-        ParkingLot parkingLot2 = new ParkingLot(2); // Capacity 2
+        ParkingLot parkingLot1 = new ParkingLot(3); // Capacity 3
+        ParkingLot parkingLot2 = new ParkingLot(5); // Capacity 5
         SuperSmartParkingBoy superSmartParkingBoy = new SuperSmartParkingBoy(List.of(parkingLot1, parkingLot2));
-        Car car = new Car(CarPlateGenerator.generatePlate());
+        Car car1 = new Car(CarPlateGenerator.generatePlate());
+        Car car2 = new Car(CarPlateGenerator.generatePlate());
+        Car car3 = new Car(CarPlateGenerator.generatePlate());
         // When
-        Ticket ticket = superSmartParkingBoy.park(car);
+        Ticket ticket1 = superSmartParkingBoy.park(car1);
+        Ticket ticket2 = superSmartParkingBoy.park(car2);
+        Ticket ticket3 = superSmartParkingBoy.park(car3);
         // Then
-        assertTrue(parkingLot2.contains(ticket));
+        assertTrue(parkingLot1.contains(ticket1));
+        assertTrue(parkingLot2.contains(ticket2));
+        assertTrue(parkingLot2.contains(ticket3));
     }
 
 
